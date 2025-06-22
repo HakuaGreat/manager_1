@@ -1,0 +1,9 @@
+display_name: サブスク管理
+publisher_display_name: YourPublisherName
+identity_name: com.yourcompany.manager1
+msix_version: 1.0.0.0
+logo_path: assets/logos/app_icon.png
+certificate_path: ./ # アイコン画像を指定
+capabilities:
+  - internetClient
+  - notifications
