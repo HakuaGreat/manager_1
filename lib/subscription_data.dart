@@ -571,9 +571,9 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.clipstudio.net/ja/login', // 追加
   ),
 
-  // Hololive関連のサブスクリプションサービス
+  // ホロライブ関連のサブスクリプションサービス
   SubscriptionService(
-    name: 'Hololive「ときのそら」',
+    name: 'ホロライブ「ときのそら」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'そらとも', price: 290),
@@ -581,7 +581,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCp6993wxpyDPHUpavwDFqgg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「ロボ子さん」',
+    name: 'ホロライブ「ロボ子さん」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '★ろぼさーへ★', price: 490),
@@ -590,7 +590,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCDqI2jOz0weumE8s7paEk6g/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「さくらみこ」',
+    name: 'ホロライブ「さくらみこ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'さくら組', price: 490),
@@ -598,7 +598,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC-hM6YJuNYVAmUWxeIr9FeA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「星街すいせい」',
+    name: 'ホロライブ「星街すいせい」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'コールをする！Lv1', price: 390),
@@ -608,7 +608,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC5CwaMl1eIgY8h02uZw7u8A/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「AZKi」',
+    name: 'ホロライブ「AZKi」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '開拓者組合', price: 490),
@@ -616,7 +616,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC0TXe_LYZ4scaW2XMyi5_kw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「アキ・ローゼンタール」',
+    name: 'ホロライブ「アキ・ローゼンタール」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'ロゼ隊の宿付き酒場', price: 490),
@@ -624,7 +624,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCFTLzh12_nrtzqBPsTCqenA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「赤井はあと」',
+    name: 'ホロライブ「赤井はあと」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'はあとんランド🐷HAATON LAND', price: 490),
@@ -634,7 +634,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC1CfXB_kRs3C-zaeTG3oGyg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「白上フブキ」',
+    name: 'ホロライブ「白上フブキ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'WELCOME TO KINGDOM', price: 490),
@@ -642,7 +642,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCdn5BQ06XqgXoAxIhbqw5Rg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「夏色まつり」',
+    name: 'ホロライブ「夏色まつり」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'うどん', price: 490),
@@ -653,7 +653,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCQ0UDLQCjY0rmuxCDE38FGg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「百鬼あやめ」',
+    name: 'ホロライブ「百鬼あやめ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '百鬼組', price: 490),
@@ -661,7 +661,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC7fk0CB07ly8oSl0aqKkqFg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「癒月ちょこ」',
+    name: 'ホロライブ「癒月ちょこ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '設定なし(豆ンバー)', price: 490),
@@ -669,7 +669,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC1suqwovbL1kzsoaZgFZLKg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「大空スバル」',
+    name: 'ホロライブ「大空スバル」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'スバ友マンバー', price: 490),
@@ -677,7 +677,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCvzGlP9oQwU--Y0r9id_jnA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「大神ミオ」',
+    name: 'ホロライブ「大神ミオ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'ミオファの森のミオファ', price: 490),
@@ -685,7 +685,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCp-5t9SrOQwXMU7iIjQfARg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「猫又おかゆ」',
+    name: 'ホロライブ「猫又おかゆ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'おにぎりゃーの牢屋', price: 490),
@@ -693,7 +693,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCvaTdHTWBGv3MKj3KVqJVCw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「戌神ころね」',
+    name: 'ホロライブ「戌神ころね」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '生贄の祭壇', price: 490),
@@ -701,7 +701,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UChAnqc_AY5_I3Px5dig3X1Q/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「兎田ぺこら」',
+    name: 'ホロライブ「兎田ぺこら」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '兎田ふぁみりあ', price: 490),
@@ -709,7 +709,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC1DCedRgGHBdm81E1llLhOQ/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「不知火フレア」',
+    name: 'ホロライブ「不知火フレア」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '止まり木', price: 490),
@@ -717,7 +717,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCvInZx9h3jC2JzsIzoOebWg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「白銀ノエル」',
+    name: 'ホロライブ「白銀ノエル」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '白銀愛好会', price: 490),
@@ -725,7 +725,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCdyqAaZDKHXg4Ahi7VENThQ/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「宝鐘マリン」',
+    name: 'ホロライブ「宝鐘マリン」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '宝鐘海賊団', price: 490),
@@ -733,7 +733,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCCzUftO8KOVkV4wQG1vkUvg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「天音かなた」',
+    name: 'ホロライブ「天音かなた」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'へい民', price: 490),
@@ -741,7 +741,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCZlDXzGoo7d44bwdNObFacg/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「角巻わため」',
+    name: 'ホロライブ「角巻わため」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'Member Sheep', price: 490),
@@ -749,7 +749,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCqm3BQLlJfvkTsX_hvm0UmA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「常闇トワ」',
+    name: 'ホロライブ「常闇トワ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '常闇Family', price: 490),
@@ -757,7 +757,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC1uv2Oq6kNxgATlCiez59hw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「姫森ルーナ」',
+    name: 'ホロライブ「姫森ルーナ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'ルーナイトへようこそなのら', price: 490),
@@ -766,7 +766,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCa9Y57gfeY0Zro_noHRVrnw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「雪花ラミィ」',
+    name: 'ホロライブ「雪花ラミィ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'もちもちだいふく', price: 490),
@@ -774,7 +774,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCFKOVgVbGmX65RxO3EtH3iw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「桃鈴ねね」',
+    name: 'ホロライブ「桃鈴ねね」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'ねねプロダクション', price: 490),
@@ -782,7 +782,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCAWSyEs_Io8MtpY3m-zqILA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「獅白ぼたん」',
+    name: 'ホロライブ「獅白ぼたん」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'ししろぼ団【SSRB】', price: 490),
@@ -790,7 +790,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCUKD-uaobj9jiqB-VXt71mA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「尾丸ポルカ」',
+    name: 'ホロライブ「尾丸ポルカ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'おまる座', price: 490),
@@ -798,7 +798,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCK9V2B22uJYu3N7eR_BT9QA/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「ラプラス・ダークネス」',
+    name: 'ホロライブ「ラプラス・ダークネス」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '貴様ら', price: 490),
@@ -806,7 +806,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCENwRMx5Yh42zWpzURebzTw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「鷹嶺ルイ」',
+    name: 'ホロライブ「鷹嶺ルイ」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: '幹部PON`s', price: 490),
@@ -814,7 +814,7 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UCs9_O1tRPMQTHQ-N_L6FU2g/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「博衣こより」',
+    name: 'ホロライブ「博衣こより」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'こよりの研究所', price: 490),
@@ -822,11 +822,27 @@ final List<SubscriptionService> subscriptionServices = [
     loginUrl: 'https://www.youtube.com/channel/UC6eWCld0KwmyHFbAqK3V-Rw/join', // 追加
   ),
   SubscriptionService(
-    name: 'Hololive「風真いろは」',
+    name: 'ホロライブ「風真いろは」',
     intervals: ['月毎'],
     plans: [
       SubscriptionPlan(name: 'かざま隊', price: 490),
     ],
     loginUrl: 'https://www.youtube.com/channel/UC_vMYWcDjmfdpH6r4TTn1MQ/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「火威青」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: '青の本棚', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCMGfV7TVTmHhEErVJg1oHBQ/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「音乃瀬奏」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: '音の勢', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCWQtYtq9EOB4-I5P-3fh8lA/join', // 追加
   ),
 ];
