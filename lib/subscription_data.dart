@@ -845,4 +845,94 @@ final List<SubscriptionService> subscriptionServices = [
     ],
     loginUrl: 'https://www.youtube.com/channel/UCWQtYtq9EOB4-I5P-3fh8lA/join', // 追加
   ),
+  SubscriptionService(
+    name: 'ホロライブ「一条莉々華」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: '一条Corp.', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCtyWhCj3AqKh2dXctLkDtng/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「儒烏風亭らでん」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: '超でん同士', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCdXAk5MpyLD8594lm_OvtGQ/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「轟はじめ」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'ぷんぷん部', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UC1iA6_NT4mtAcIII6ygrvCw/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「響咲リオナ」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: '響咲連合の溜まり場', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UC9LSiN9hXI55svYEBrrK-tw/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「虎金妃笑虎」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'ニコ担メン', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCuI_opAVX6qbxZY-a-AxFuQ/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「水宮枢」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'しゅぴ通信', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCjk2nKmHzgH5Xy-C5qYRd5A/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「輪堂千速」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'ガレージ輪堂', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCKMWFR6lAstLa7Vbf5dH7ig/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'ホロライブ「綺々羅々ヴィヴィ」',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'ヴィヴィ喜劇', price: 490),
+    ],
+    loginUrl: 'https://www.youtube.com/channel/UCGzTVXqMQHa4AgJVJIVvtDQ/join', // 追加
+  ),
+  SubscriptionService(
+    name: 'U-FRET',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'U-FRETプレミアム', price: 980),
+    ],
+    loginUrl: 'https://www.ufret.jp/login.php', // 追加
+  ),
+  SubscriptionService(
+    name: 'Chordify',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'Basic', price: 450),
+      SubscriptionPlan(name: 'Premium', price: 800),
+      SubscriptionPlan(name: 'Premium + Toolkit', price: 1250),
+    ],
+    loginUrl: 'https://chordify.net/' // 追加
+  ),
+  SubscriptionService(
+    name: 'twitch',
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'TURBO', price: 1737),
+    ],
+    loginUrl: 'https://www.twitch.tv/' // 追加
+  ),
 ];
