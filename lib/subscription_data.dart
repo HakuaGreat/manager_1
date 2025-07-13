@@ -24,16 +24,11 @@ class SubscriptionPlan {
 final List<SubscriptionService> subscriptionServices = [
   SubscriptionService(
     name: 'Netflix',
-    intervals: ['月毎', '年毎'],
+    intervals: ['月毎'],
     plans: [
-      SubscriptionPlan(name: 'ベーシック', price: 990),
-      SubscriptionPlan(name: 'スタンダード', price: 1490),
-      SubscriptionPlan(name: 'プレミアム', price: 1980),
-    ],
-    plansYear: [
-      SubscriptionPlan(name: 'ベーシック', price: 9900),
-      SubscriptionPlan(name: 'スタンダード', price: 14900),
-      SubscriptionPlan(name: 'プレミアム', price: 19800),
+      SubscriptionPlan(name: 'ベーシック', price: 890),
+      SubscriptionPlan(name: 'スタンダード', price: 1590),
+      SubscriptionPlan(name: 'プレミアム', price: 2290),
     ],
     loginUrl: 'https://www.netflix.com/login', // 追加
   ),
@@ -43,7 +38,23 @@ final List<SubscriptionService> subscriptionServices = [
     plans: [
       SubscriptionPlan(name: '通常', price: 600),
     ],
+    plansYear: [
+      SubscriptionPlan(name: '年払い', price: 5900),
+    ],
     loginUrl: 'https://www.amazon.co.jp/',
+  ),
+  SubscriptionService(
+    name: 'Discord Nitro', 
+    intervals: ['月毎'],
+    plans: [
+      SubscriptionPlan(name: 'BASIC', price: 350),
+      SubscriptionPlan(name: 'NITRO', price: 1050),
+    ],
+    plansYear: [
+      SubscriptionPlan(name: 'BASIC 年間', price: 3500),
+      SubscriptionPlan(name: 'NITRO 年間', price: 10500),
+    ],
+    loginUrl: 'https://discord.com/login', // 追加
   ),
   SubscriptionService(
     name: 'YouTube Premium',
