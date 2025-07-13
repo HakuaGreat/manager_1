@@ -16,6 +16,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
@@ -52,15 +53,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
   final List<Map<String, dynamic>> _subscriptions = [];
   final List<Map<String, dynamic>> _fanclubs = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-    // チュートリアル表示
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showTutorialDialog();
-    });
-  }
 
   void _showTutorialDialog() {
     showDialog(
@@ -1037,7 +1029,17 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showTutorialDialog();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // 金額計算
     int monthlyTotal = 0;
     int yearlyTotal = 0;
 
@@ -1045,7 +1047,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
       if (sub['interval'] == '月毎') {
         monthlyTotal += (sub['price'] as num).toInt();
       } else if (sub['interval'] == '年毎') {
-        yearlyTotal += (sub['price'] * 12 as num).toInt();
+        yearlyTotal += (sub['price'] as num).toInt();
       }
     }
     // ファンクラブも月額合計に加算
@@ -1108,12 +1110,10 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                 Navigator.pushNamed(context, '/inquiry');
               },
             ),
-            // ↓↓↓ 寄付ボタンを追加 ↓↓↓
             ListTile(
               leading: const Icon(Icons.volunteer_activism, color: Colors.pink),
               title: const Text('寄付する'),
               onTap: () async {
-                // 寄付ページのURLを設定してください
                 const url = 'https://ofuse.me/16914628';
                 if (await canLaunchUrl(Uri.parse(url))) {
                   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -1129,7 +1129,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
       ),
       body: Column(
         children: [
-          // 合計表示（年間総額は一番右・一番左にグラフボタン）
+          // 合計表示
           Card(
             margin: const EdgeInsets.all(8),
             color: Colors.blue[50],
@@ -1233,7 +1233,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
           ),
           const Divider(height: 1),
 
-          // ★ ここにサブスク追加・ファンクラブ追加ボタンを追加
+          // サブスク追加・ファンクラブ追加ボタン
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
@@ -1266,7 +1266,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
           Expanded(
             child: ListView(
               children: [
-                // サブスク一覧をListView.builderでindexを渡す
+                // サブスク一覧
                 ...List.generate(_subscriptions.length, (index) {
                   final sub = _subscriptions[index];
                   final dynamic startDateRaw = sub['startDate'];
@@ -1297,16 +1297,14 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // ログインページボタン追加
                           IconButton(
                             icon: const Icon(Icons.login, color: Colors.green),
                             tooltip: 'ログインページへ',
                             onPressed: () async {
-                              // サブスク名からログインURLを取得
                               final serviceName = sub['service'];
                               final service = subscriptionServices.firstWhere(
                                 (s) => s.name == serviceName,
-                                orElse: () => SubscriptionService(name: '', plans: [], intervals: []),
+                                orElse: () => SubscriptionService(name: '', intervals: [], plans: []),
                               );
                               final loginUrl = (service.loginUrl != null && service.loginUrl!.isNotEmpty)
                                   ? service.loginUrl
@@ -1352,7 +1350,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                                         setState(() {
                                           _subscriptions.removeAt(index);
                                         });
-                                        _saveData(); // ★ここを追加
+                                        _saveData();
                                         Navigator.pop(ctx);
                                       },
                                       child: const Text('削除', style: TextStyle(color: Colors.red)),
@@ -1367,6 +1365,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                     ),
                   );
                 }),
+                
                 // ファンクラブ一覧
                 ...List.generate(_fanclubs.length, (fcIndex) {
                   final fc = _fanclubs[fcIndex];
@@ -1399,7 +1398,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // ファンクラブページへ行くボタン
                           IconButton(
                             icon: const Icon(Icons.open_in_new, color: Colors.green),
                             tooltip: 'ファンクラブページへ',
@@ -1414,7 +1412,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                               }
                             },
                           ),
-                          // 編集ボタン
                           IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),
                             tooltip: '編集',
@@ -1422,7 +1419,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                               _showEditFanClubDialog(fcIndex);
                             },
                           ),
-                          // 削除ボタン
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             tooltip: '削除',
@@ -1466,7 +1462,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
   }
 }
 
-// 棒グラフページ
 class MonthlyPaymentBarChartPage extends StatelessWidget {
   final List<Map<String, dynamic>> subscriptions;
   const MonthlyPaymentBarChartPage({super.key, required this.subscriptions});
