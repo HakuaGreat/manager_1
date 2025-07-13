@@ -2,12 +2,14 @@ class SubscriptionService {
   final String name;
   final List<String> intervals;
   final List<SubscriptionPlan> plans;
+  final List<SubscriptionPlan>? plansYear; // 年間プランを追加
   final String? loginUrl; // ← 追加
 
   SubscriptionService({
     required this.name,
     required this.intervals,
     required this.plans,
+    this.plansYear,
     this.loginUrl,
   });
 }
@@ -27,6 +29,11 @@ final List<SubscriptionService> subscriptionServices = [
       SubscriptionPlan(name: 'ベーシック', price: 990),
       SubscriptionPlan(name: 'スタンダード', price: 1490),
       SubscriptionPlan(name: 'プレミアム', price: 1980),
+    ],
+    plansYear: [
+      SubscriptionPlan(name: 'ベーシック', price: 9900),
+      SubscriptionPlan(name: 'スタンダード', price: 14900),
+      SubscriptionPlan(name: 'プレミアム', price: 19800),
     ],
     loginUrl: 'https://www.netflix.com/login', // 追加
   ),

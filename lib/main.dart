@@ -158,8 +158,15 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
     int? price;
     String? selectedPayment;
     String searchText = '';
+    bool isCustomService = false; // カスタムサービス用フラグ
+    String customServiceName = '';
+    String customPlanName = '';
+    int customPrice = 0;
 
-    final TextEditingController notifyDaysController = TextEditingController(text: '3'); // デフォルト3日前
+    final TextEditingController notifyDaysController = TextEditingController(text: '3');
+    final TextEditingController customServiceController = TextEditingController();
+    final TextEditingController customPlanController = TextEditingController();
+    final TextEditingController customPriceController = TextEditingController();
 
     showDialog(
       context: context,
@@ -176,45 +183,99 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
             SubscriptionService? service = selectedService != null
                 ? subscriptionServices.firstWhere((s) => s.name == selectedService)
                 : null;
-            List<SubscriptionPlan> plans = service?.plans ?? [];
-            // サービスごとに定義されたintervalsのみを選択肢に
-            final List<String> intervalOptions = service?.intervals ?? [];
+            
+            // ★ 間隔に応じてプランリストを切り替え
+            List<SubscriptionPlan> plans = [];
+            if (service != null && !isCustomService) {
+              if (selectedInterval == '年毎' && service.plansYear != null) {
+                plans = service.plansYear!; // 年額プランを使用
+              } else {
+                plans = service.plans; // 月額プランを使用
+              }
+            }
+            
+            final List<String> intervalOptions = isCustomService 
+                ? ['月毎', '年毎'] // カスタムサービスは両方選択可能
+                : (service?.intervals ?? []);
 
             return AlertDialog(
               title: const Text('サブスク追加'),
               content: SingleChildScrollView(
                 child: Column(
                   children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'サービス名検索',
-                        prefixIcon: Icon(Icons.search),
+                    // カスタムサービス切り替えスイッチ
+                    SwitchListTile(
+                      title: const Text('任意のサービスを追加'),
+                      subtitle: const Text('リストにないサービスを追加する場合'),
+                      value: isCustomService,
+                      onChanged: (value) {
+                        setState(() {
+                          isCustomService = value;
+                          if (value) {
+                            selectedService = null;
+                            selectedPlan = null;
+                            price = null;
+                          } else {
+                            customServiceName = '';
+                            customPlanName = '';
+                            customPrice = 0;
+                            customServiceController.clear();
+                            customPlanController.clear();
+                            customPriceController.clear();
+                          }
+                        });
+                      },
+                    ),
+                    const Divider(),
+                    
+                    if (!isCustomService) ...[
+                      // 既存のサービス選択
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'サービス名検索',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            searchText = value;
+                          });
+                        },
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          searchText = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(labelText: 'サービス名'),
-                      value: filteredServices.any((s) => s.name == selectedService) ? selectedService : null,
-                      items: filteredServices
-                          .map((s) => DropdownMenuItem(
-                                value: s.name,
-                                child: Text(s.name),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedService = value;
-                          selectedInterval = null;
-                          selectedPlan = null;
-                          price = null;
-                        });
-                      },
-                    ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'サービス名'),
+                        value: filteredServices.any((s) => s.name == selectedService) ? selectedService : null,
+                        items: filteredServices
+                            .map((s) => DropdownMenuItem(
+                                  value: s.name,
+                                  child: Text(s.name),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedService = value;
+                            selectedInterval = null;
+                            selectedPlan = null;
+                            price = null;
+                          });
+                        },
+                      ),
+                    ] else ...[
+                      // カスタムサービス入力
+                      TextField(
+                        controller: customServiceController,
+                        decoration: const InputDecoration(
+                          labelText: 'サービス名（任意入力）',
+                          hintText: '例: ○○のメンバーシップ',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customServiceName = value;
+                          });
+                        },
+                      ),
+                    ],
+                    
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -253,7 +314,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    // 月毎・年毎を固定で選択
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(labelText: '間隔'),
                       value: selectedInterval,
@@ -266,29 +326,64 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                       onChanged: (value) {
                         setState(() {
                           selectedInterval = value;
-                          selectedPlan = null;
-                          price = null;
+                          if (!isCustomService) {
+                            selectedPlan = null; // ★ 間隔変更時にプランをリセット
+                            price = null;
+                          }
                         });
                       },
                     ),
                     const SizedBox(height: 12),
-                    // プランドロップダウン（intervalは参照しない）
-                    DropdownButtonFormField<SubscriptionPlan>(
-                      decoration: const InputDecoration(labelText: 'プラン'),
-                      value: selectedPlan,
-                      items: plans
-                          .map((plan) => DropdownMenuItem(
-                                value: plan,
-                                child: Text(plan.name),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPlan = value;
-                          price = value?.price;
-                        });
-                      },
-                    ),
+                    
+                    if (!isCustomService) ...[
+                      // 既存サービスのプラン選択
+                      DropdownButtonFormField<SubscriptionPlan>(
+                        decoration: const InputDecoration(labelText: 'プラン'),
+                        value: selectedPlan,
+                        items: plans
+                            .map((plan) => DropdownMenuItem(
+                                  value: plan,
+                                  child: Text(plan.name),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPlan = value;
+                            price = value?.price;
+                          });
+                        },
+                      ),
+                    ] else ...[
+                      // カスタムプラン・価格入力
+                      TextField(
+                        controller: customPlanController,
+                        decoration: const InputDecoration(
+                          labelText: 'プラン名（任意入力）',
+                          hintText: '例: レギュラープラン',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customPlanName = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: customPriceController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: '料金（円）',
+                          hintText: '例: 500',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customPrice = int.tryParse(value) ?? 0;
+                            price = customPrice;
+                          });
+                        },
+                      ),
+                    ],
+                    
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(labelText: '支払い方法'),
@@ -330,20 +425,33 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                   child: const Text('キャンセル'),
                 ),
                 ElevatedButton(
-                  onPressed: (selectedService != null &&
-                          selectedInterval != null &&
-                          selectedPlan != null &&
-                          selectedPayment != null)
+                  onPressed: (!isCustomService
+                          ? (selectedService != null &&
+                              selectedInterval != null &&
+                              selectedPlan != null &&
+                              selectedPayment != null)
+                          : (customServiceName.isNotEmpty &&
+                              customPlanName.isNotEmpty &&
+                              selectedInterval != null &&
+                              selectedPayment != null &&
+                              customPrice > 0))
                       ? () {
+                          final serviceNameToSave = isCustomService ? customServiceName : selectedService;
+                          final planNameToSave = isCustomService ? customPlanName : selectedPlan!.name;
+                          
                           _addSubscription({
-                            'service': selectedService,
-                            'plan': selectedPlan!.name,
+                            'service': serviceNameToSave,
+                            'plan': planNameToSave,
                             'interval': selectedInterval,
                             'startDate': startDate,
                             'price': price,
                             'payment': selectedPayment,
+                            'isCustom': isCustomService, // カスタムかどうかのフラグも保存
                           });
                           Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${isCustomService ? "カスタム" : ""}サブスクを追加しました')),
+                          );
                         }
                       : null,
                   child: const Text('追加'),
