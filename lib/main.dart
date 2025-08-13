@@ -4,12 +4,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'subscription_data.dart';
 import 'payment_methods.dart';
-import 'package:fl_chart/fl_chart.dart'; // pubspec.yamlにfl_chart: ^0.66.0 などを追加してください
-import 'package:url_launcher/url_launcher.dart'; // pubspec.yamlに url_launcher: ^6.2.5 などを追加してください
+import 'package:fl_chart/fl_chart.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'subscription_guide_data.dart';
-import 'package:intl/intl.dart'; // pubspec.yamlに intl: ^0.18.1 などを追加してください
-import 'package:shared_preferences/shared_preferences.dart'; // pubspec.yamlに shared_preferences: ^2.2.2 などを追加
-import 'dart:convert'; // 追加: jsonDecodeを使うため
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -52,7 +52,9 @@ class SubscriptionHomePage extends StatefulWidget {
 class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
   final List<Map<String, dynamic>> _subscriptions = [];
   final List<Map<String, dynamic>> _fanclubs = [];
-
+  
+  // 数値フォーマッター（三桁区切り）を追加
+  final NumberFormat _numberFormat = NumberFormat('#,###');
 
   void _showTutorialDialog() {
     showDialog(
@@ -158,15 +160,17 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
     int? price;
     String? selectedPayment;
     String searchText = '';
-    bool isCustomService = false; // カスタムサービス用フラグ
+    bool isCustomService = false;
     String customServiceName = '';
     String customPlanName = '';
     int customPrice = 0;
+    String customLoginUrl = '';
 
     final TextEditingController notifyDaysController = TextEditingController(text: '3');
     final TextEditingController customServiceController = TextEditingController();
     final TextEditingController customPlanController = TextEditingController();
     final TextEditingController customPriceController = TextEditingController();
+    final TextEditingController customLoginUrlController = TextEditingController();
 
     showDialog(
       context: context,
@@ -271,6 +275,19 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                         onChanged: (value) {
                           setState(() {
                             customServiceName = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: customLoginUrlController,
+                        decoration: const InputDecoration(
+                          labelText: 'ログインURL（任意）',
+                          hintText: 'https://example.com/login',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customLoginUrl = value;
                           });
                         },
                       ),
@@ -404,7 +421,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                     Row(
                       children: [
                         const Text('金額: '),
-                        Text(price != null ? '$price 円' : '未選択'),
+                        Text(price != null ? '¥${_numberFormat.format(price)}' : '未選択'),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -446,7 +463,8 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                             'startDate': startDate,
                             'price': price,
                             'payment': selectedPayment,
-                            'isCustom': isCustomService, // カスタムかどうかのフラグも保存
+                            'isCustom': isCustomService,
+                            'loginUrl': isCustomService ? customLoginUrl : null, // ← 追加
                           });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -464,29 +482,49 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
     );
   }
 
+
   void _editSubscription(int index) {
     final sub = _subscriptions[index];
+    final bool isCustom = sub['isCustom'] ?? false; // カスタムかどうか判定
+    
     String? selectedService = sub['service'];
     String? selectedInterval = sub['interval'];
-    SubscriptionService? service = selectedService != null
-        ? subscriptionServices.firstWhere((s) => s.name == selectedService)
-        : null;
-    List<SubscriptionPlan> plans = service?.plans ?? [];
-    SubscriptionPlan? selectedPlan = plans
-        .firstWhere(
-          (p) => p.name == sub['plan'],
-          orElse: () => plans.isNotEmpty ? plans.first : SubscriptionPlan(name: '未設定', price: 0),
-        );
+    SubscriptionPlan? selectedPlan;
     DateTime? startDate;
+    int? price = sub['price'];
+    String? selectedPayment = sub['payment'];
+    String searchText = '';
+    
+    // カスタムサブスク用の変数
+    String customServiceName = isCustom ? (sub['service'] ?? '') : '';
+    String customPlanName = isCustom ? (sub['plan'] ?? '') : '';
+    int customPrice = isCustom ? (sub['price'] ?? 0) : 0;
+    String customLoginUrl = isCustom ? (sub['loginUrl'] ?? '') : '';
+
+    final TextEditingController notifyDaysController = TextEditingController(text: '3');
+    final TextEditingController customServiceController = TextEditingController(text: customServiceName);
+    final TextEditingController customPlanController = TextEditingController(text: customPlanName);
+    final TextEditingController customPriceController = TextEditingController(text: isCustom ? customPrice.toString() : '');
+    final TextEditingController customLoginUrlController = TextEditingController(text: customLoginUrl);
+
+    // 既存サービスの場合の初期化
+    if (!isCustom) {
+      SubscriptionService? service = selectedService != null
+          ? subscriptionServices.firstWhere((s) => s.name == selectedService, orElse: () => SubscriptionService(name: '', intervals: [], plans: []))
+          : null;
+      List<SubscriptionPlan> plans = service?.plans ?? [];
+      selectedPlan = plans.firstWhere(
+        (p) => p.name == sub['plan'],
+        orElse: () => plans.isNotEmpty ? plans.first : SubscriptionPlan(name: '未設定', price: 0),
+      );
+    }
+
     final startDateRaw = sub['startDate'];
     if (startDateRaw is DateTime) {
       startDate = startDateRaw;
     } else if (startDateRaw is String && startDateRaw.isNotEmpty) {
       startDate = DateTime.tryParse(startDateRaw);
     }
-    int? price = sub['price'];
-    String? selectedPayment = sub['payment'];
-    String searchText = '';
 
     showDialog(
       context: context,
@@ -500,48 +538,88 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
               return serviceName.contains(search);
             }).toList();
 
-            SubscriptionService? service = selectedService != null
-                ? subscriptionServices.firstWhere((s) => s.name == selectedService)
-                : null;
-            List<SubscriptionPlan> plans = service?.plans ?? [];
-            // サービスごとに定義されたintervalsのみを選択肢に
-            final List<String> intervalOptions = service?.intervals ?? [];
+            SubscriptionService? service;
+            List<SubscriptionPlan> plans = [];
+            List<String> intervalOptions = [];
+
+            if (!isCustom && selectedService != null) {
+              service = subscriptionServices.firstWhere((s) => s.name == selectedService, orElse: () => SubscriptionService(name: '', intervals: [], plans: []));
+              // ★ 間隔に応じてプランリストを切り替え
+              if (selectedInterval == '年毎' && service.plansYear != null) {
+                plans = service.plansYear!; // 年額プランを使用
+              } else {
+                plans = service.plans; // 月額プランを使用
+              }
+              intervalOptions = service.intervals;
+            } else if (isCustom) {
+              intervalOptions = ['月毎', '年毎']; // カスタムは両方選択可能
+            }
 
             return AlertDialog(
-              title: const Text('サブスク編集'),
+              title: Text(isCustom ? 'カスタムサブスク編集' : 'サブスク編集'),
               content: SingleChildScrollView(
                 child: Column(
                   children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'サービス名検索',
-                        prefixIcon: Icon(Icons.search),
+                    if (isCustom) ...[
+                      // カスタムサービスの編集
+                      TextField(
+                        controller: customServiceController,
+                        decoration: const InputDecoration(
+                          labelText: 'サービス名',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customServiceName = value;
+                          });
+                        },
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          searchText = value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(labelText: 'サービス名'),
-                      value: filteredServices.any((s) => s.name == selectedService) ? selectedService : null,
-                      items: filteredServices
-                          .map((s) => DropdownMenuItem(
-                                value: s.name,
-                                child: Text(s.name),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedService = value;
-                          selectedInterval = null;
-                          selectedPlan = null;
-                          price = null;
-                        });
-                      },
-                    ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: customLoginUrlController,
+                        decoration: const InputDecoration(
+                          labelText: 'ログインURL（任意）',
+                          hintText: 'https://example.com/login',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            customLoginUrl = value;
+                          });
+                        },
+                      ),
+                    ] else ...[
+                      // 既存サービスの編集
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'サービス名検索',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            searchText = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'サービス名'),
+                        value: filteredServices.any((s) => s.name == selectedService) ? selectedService : null,
+                        items: filteredServices
+                            .map((s) => DropdownMenuItem(
+                                  value: s.name,
+                                  child: Text(s.name),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedService = value;
+                            selectedInterval = null;
+                            selectedPlan = null;
+                            price = null;
+                          });
+                        },
+                      ),
+                    ],
+                    
                     const SizedBox(height: 12),
                     Row(
                       children: [
@@ -580,7 +658,6 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    // 月毎・年毎を固定で選択
                     DropdownButtonFormField<String>(
                       decoration: const InputDecoration(labelText: '間隔'),
                       value: selectedInterval,
@@ -636,8 +713,17 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                     Row(
                       children: [
                         const Text('金額: '),
-                        Text(price != null ? '$price 円' : '未選択'),
+                        Text(price != null ? '¥${_numberFormat.format(price)}' : '未選択'),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: notifyDaysController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: '課金日通知（何日前）',
+                        hintText: '例: 3',
+                      ),
                     ),
                   ],
                 ),
@@ -648,23 +734,37 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                   child: const Text('キャンセル'),
                 ),
                 ElevatedButton(
-                  onPressed: (selectedService != null &&
-                          selectedInterval != null &&
-                          selectedPlan != null &&
-                          selectedPayment != null)
+                  onPressed: (!isCustom
+                          ? (selectedService != null &&
+                              selectedInterval != null &&
+                              selectedPlan != null &&
+                              selectedPayment != null)
+                          : (customServiceName.isNotEmpty &&
+                              customPlanName.isNotEmpty &&
+                              selectedInterval != null &&
+                              selectedPayment != null &&
+                              customPrice > 0))
                       ? () {
+                          final serviceNameToSave = isCustom ? customServiceName : selectedService;
+                          final planNameToSave = isCustom ? customPlanName : selectedPlan!.name;
+                          
                           setState(() {
                             _subscriptions[index] = {
-                              'service': selectedService,
-                              'plan': selectedPlan!.name,
+                              'service': serviceNameToSave,
+                              'plan': planNameToSave,
                               'interval': selectedInterval,
                               'startDate': startDate,
                               'price': price,
                               'payment': selectedPayment,
+                              'isCustom': isCustom,
+                              'loginUrl': isCustom ? customLoginUrl : null,
                             };
                           });
                           _saveData(); // ここで必ず保存
                           Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${isCustom ? "カスタム" : ""}サブスクを編集しました')),
+                          );
                         }
                       : null,
                   child: const Text('保存'),
@@ -1275,19 +1375,19 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                                 Column(
                                   children: [
                                     const Text('月毎合計', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text('¥$monthlyTotal', style: const TextStyle(fontSize: 18)),
+                                    Text('¥${_numberFormat.format(monthlyTotal)}', style: const TextStyle(fontSize: 18)),
                                   ],
                                 ),
                                 Column(
                                   children: [
                                     const Text('年毎合計', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text('¥$yearlyTotal', style: const TextStyle(fontSize: 18)),
+                                    Text('¥${_numberFormat.format(yearlyTotal)}', style: const TextStyle(fontSize: 18)),
                                   ],
                                 ),
                                 Column(
                                   children: [
                                     const Text('年間総額', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text('¥$annualTotal', style: const TextStyle(fontSize: 22)),
+                                    Text('¥${_numberFormat.format(annualTotal)}', style: const TextStyle(fontSize: 22)),
                                   ],
                                 ),
                               ],
@@ -1318,19 +1418,19 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                             Column(
                               children: [
                                 const Text('月毎合計', style: TextStyle(fontWeight: FontWeight.bold)),
-                                Text('¥$monthlyTotal', style: const TextStyle(fontSize: 18)),
+                                Text('¥${_numberFormat.format(monthlyTotal)}', style: const TextStyle(fontSize: 18)),
                               ],
                             ),
                             Column(
                               children: [
                                 const Text('年毎合計', style: TextStyle(fontWeight: FontWeight.bold)),
-                                Text('¥$yearlyTotal', style: const TextStyle(fontSize: 18)),
+                                Text('¥${_numberFormat.format(yearlyTotal)}', style: const TextStyle(fontSize: 18)),
                               ],
                             ),
                             Column(
                               children: [
                                 const Text('年間総額', style: TextStyle(fontWeight: FontWeight.bold)),
-                                Text('¥$annualTotal', style: const TextStyle(fontSize: 22)),
+                                Text('¥${_numberFormat.format(annualTotal)}', style: const TextStyle(fontSize: 22)),
                               ],
                             ),
                           ],
@@ -1397,7 +1497,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                           Text(
                             '開始日: ${startDate != null ? "${startDate.year}/${startDate.month}/${startDate.day}" : "未選択"}',
                           ),
-                          Text('金額: ${sub['price']}円'),
+                          Text('金額: ¥${_numberFormat.format(sub['price'])}'),
                           Text('継続期間: ${_calculateDuration(startDate)}'),
                           Text('支払い方法: ${sub['payment'] ?? '未設定'}'),
                         ],
@@ -1410,14 +1510,22 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                             tooltip: 'ログインページへ',
                             onPressed: () async {
                               final serviceName = sub['service'];
-                              final service = subscriptionServices.firstWhere(
-                                (s) => s.name == serviceName,
-                                orElse: () => SubscriptionService(name: '', intervals: [], plans: []),
-                              );
-                              final loginUrl = (service.loginUrl != null && service.loginUrl!.isNotEmpty)
-                                  ? service.loginUrl
-                                  : null;
-                              if (loginUrl != null) {
+                              final isCustom = sub['isCustom'] ?? false;
+                              String? loginUrl;
+                              
+                              if (isCustom) {
+                                // カスタムサブスクの場合
+                                loginUrl = sub['loginUrl'];
+                              } else {
+                                // 既存サービスの場合
+                                final service = subscriptionServices.firstWhere(
+                                  (s) => s.name == serviceName,
+                                  orElse: () => SubscriptionService(name: '', intervals: [], plans: []),
+                                );
+                                loginUrl = service.loginUrl;
+                              }
+                              
+                              if (loginUrl != null && loginUrl.isNotEmpty) {
                                 if (await canLaunchUrl(Uri.parse(loginUrl))) {
                                   await launchUrl(Uri.parse(loginUrl), mode: LaunchMode.externalApplication);
                                 } else {
@@ -1497,7 +1605,7 @@ class _SubscriptionHomePageState extends State<SubscriptionHomePage> {
                           Text(
                             '開始日: ${startDate != null ? "${startDate.year}/${startDate.month}/${startDate.day}" : "未選択"}',
                           ),
-                          Text('金額: ${fc['price']}円'),
+                          Text('金額: ¥${_numberFormat.format(fc['price'])}'),
                           if ((fc['memo'] ?? '').toString().isNotEmpty)
                             Text('メモ: ${fc['memo']}'),
                           Text('継続期間: ${_calculateDuration(startDate)}'),
@@ -1774,6 +1882,9 @@ class SubscriptionGuidePage extends StatefulWidget {
 // --- サブスク案内ページの検索ロジックをカテゴリ対応に修正 ---
 class _SubscriptionGuidePageState extends State<SubscriptionGuidePage> {
   String _searchText = '';
+  
+  // 数値フォーマッター（三桁区切り）を追加
+  final NumberFormat _numberFormat = NumberFormat('#,###');
 
   @override
   Widget build(BuildContext context) {
@@ -1866,7 +1977,7 @@ class _SubscriptionGuidePageState extends State<SubscriptionGuidePage> {
                           const Text('プラン一覧:', style: TextStyle(fontWeight: FontWeight.bold)),
                           ...service.plans.map((plan) => Padding(
                                 padding: const EdgeInsets.only(left: 8, top: 2),
-                                child: Text('・${plan.name}：¥${plan.price}（月毎）'),
+                                child: Text('・${plan.name}：¥${_numberFormat.format(plan.price)}（月毎）'),
                               )),
                           const SizedBox(height: 8),
                           if (guide.url.isNotEmpty)
@@ -2008,7 +2119,7 @@ Future<void> scheduleFreeTrialNotification({
     ),
     uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     matchDateTimeComponents: repeatMonthly
-        ? DateTimeComponents.dayOfMonthAndTime // ← ここで毎月繰り返し
+        ? DateTimeComponents.dayOfMonthAndTime // ← ここを毎月繰り返し
         : DateTimeComponents.dateAndTime,
   );
   return;

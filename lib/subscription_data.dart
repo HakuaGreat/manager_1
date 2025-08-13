@@ -45,7 +45,7 @@ final List<SubscriptionService> subscriptionServices = [
   ),
   SubscriptionService(
     name: 'Discord Nitro', 
-    intervals: ['月毎'],
+    intervals: ['月毎', '年毎'],
     plans: [
       SubscriptionPlan(name: 'BASIC', price: 350),
       SubscriptionPlan(name: 'NITRO', price: 1050),
